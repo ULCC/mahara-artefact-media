@@ -1,0 +1,192 @@
+/**
+ * CSS rules for the file artefact plugin
+ *
+ * Copyright (C) 2006-2009 Catalyst IT
+ * This file is distributed under the same terms as Mahara itself
+ */
+
+#profileicons {
+    width: 100%;
+}
+* html #profileicons {
+	width: 97%;
+}
+
+/* File upload box */
+.fileupload {
+	background: #eee;
+	border: 1px solid #d1d1d1;
+}
+.fileupload th {
+	text-align: left;
+	padding-left: 1em;
+}
+.fileupload th label,
+.uploadform th label {
+	white-space: nowrap !important;
+	font-weight: bold !important;
+}
+.uploadform td {
+	font-size: .9em;
+	line-height: 1.4em;
+}
+.fileupload td#media_filebrowser_upload_messages,
+.fileupload td#editpost_filebrowser_upload_messages {
+	padding: 0;
+}
+
+/* folder nav */
+.foldernav {
+    font-weight: bold;
+    margin: 1em 0 0 0;
+    padding: 0 0 0 1.4em;
+    font-size: 1.2em;
+	line-height: 1em;
+    height: 1.6em;
+    background: url(../images/foldernav_small.png) no-repeat left top;
+}
+form#media .foldernav {
+    padding: 0 0 0 1.6em;
+    font-size: 1.4em;
+	line-height: 1.6em;
+    height: 1.7em;
+    background: url(../images/foldernav.png) no-repeat left 3px;
+}
+
+/* File list */
+.filelist {
+    width: 100%;
+	* width: 96%;
+}
+.filelist th {
+	border-bottom: 1px solid #CCCCCC;
+}
+.filelist td.right input {
+	font-size: .9em;
+}
+/* parent folder row */
+tr.parentfolder td {
+	background-color: #ddd !important;
+	font-style: italic;
+}
+/* new row */
+.filelist tr.highlight-file td {
+    background-color: #fffcd8 !important;
+	border-bottom: 1px solid #FFF;
+}
+/* folder row */
+tr.folder td {
+	background-color: #e7e7e7;
+	border-bottom: 1px solid #FFF;
+}
+tr.folder td.filename {
+	font-weight: bold;
+}
+/* folder row being moved */
+tr.folderhover td {
+    background-color: #ffc;
+}
+tr.folderhover a {
+    text-decoration: none;
+}
+.icon-drag {
+    cursor: move;
+}
+/* File list edit box */
+#media_filebrowser_edit_row td {
+	border: 2px solid #eee;
+}
+#media_filebrowser_edit_row #media_filebrowser_edit_heading {
+	font-size: 1.2em;
+}
+#media_filebrowser_edit_row table th {
+	text-align: left;
+	border: 0;
+}
+#media_filebrowser_edit_row table th label {
+	font-weight: bold;
+}
+#media_filebrowser_edit_row td td {
+	border: none;
+}
+
+/* Edit post File list */
+#editpost_filebrowser_upload_container {
+	margin-top: 1em;
+}
+#editpost_filebrowser_upload_browse,
+#editpost_filebrowser_open_upload_browse_container {
+	padding: 1em;
+	border-top: 1px solid #eee;
+	border-right: 1px solid #eee;
+	border-bottom: 4px solid #eee;
+	border-left: 1px solid #eee;
+}
+.attachments th {
+	text-align: left !important;
+}
+
+/* Edit post selected file list */
+#editpost_filebrowser_empty_selectlist {
+	margin: 0;
+}
+
+.filelist table table.editpermissions th,
+.filelist table table.editpermissions td {
+	font-size: .9em;
+}
+
+.filelist .disabled {
+	color: #C3C3C3;
+}
+
+
+/* Side Quota Bar */
+#mediaquota_message {
+    text-align: center;
+    margin: 0 0 1em 0;
+	font-size: 1em;
+}
+#mediaquota_used {
+	font-weight: bold;
+}
+#mediaquota_total {
+	font-weight: bold;
+}
+#mediaquotawrap {
+	text-align: center;
+	width: 210px;
+	margin: 0 auto;
+}
+#mediaquota_fill {
+    margin: 0 5px;
+    height: 28px;
+    background-image: url(../../../../../../theme/raw/static/images/quota_bar_highlight.gif);
+    position: absolute;
+}
+#mediaquota_bar,
+#mediaquota_bar_100 {
+    background: url(../../../../../../theme/raw/static/images/quota_bar_bg.gif) no-repeat;
+    height: 28px;
+    width: 210px;
+	line-height: 2.5em;
+    text-align: center;
+    margin: 0;
+}
+#mediaquota_bar_100 {
+    background: url(../../../../../../theme/raw/static/images/quota_bar_full.gif) no-repeat;
+}
+#mediaquota_percentage {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    color: #ffffff;
+	font-weight: bold;
+}
+#media_filebrowser_container div.icon img {
+    width: 40px;
+}
+div#mediaquotasource {
+    margin-bottom: 0;
+}
+

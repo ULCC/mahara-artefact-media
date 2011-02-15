@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="lib/db" VERSION="20060926" COMMENT="XMLDB file for Mahara media plugin tables"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd"
+>
+    <TABLES>
+        <TABLE NAME="artefact_media_episode">
+            <FIELDS>
+                <FIELD NAME="artefact" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="size" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="duration" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="streamingfilename" TYPE="text" NOTNULL="false" />
+                <FIELD NAME="filetype" TYPE="text" NOTNULL="false" />
+                <FIELD NAME="account" TYPE="char" NOTNULL="true" LENGTH="255" />
+                <FIELD NAME="originalextension" TYPE="char" NOTNULL="true" LENGTH="255" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="artefactpk" TYPE="primary" FIELDS="artefact" />
+                <KEY NAME="artefactfk" TYPE="foreign" FIELDS="artefact" REFTABLE="artefact" REFFIELDS="id" />
+                <KEY NAME="institutionfk" TYPE="foreign" FIELDS="account" REFTABLE="institution" REFFIELDS="name" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="artefact_media_ldap_quota">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" NOTNULL="true" />
+                <FIELD NAME="institution" TYPE="char" LENGTH="255" NOTNULL="true" />
+                <FIELD NAME="ldapou" TYPE="char" LENGTH="255" NOTNULL="false" />
+                <FIELD NAME="quota" TYPE="int" LENGTH="10" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="institutionfk" TYPE="foreign" FIELDS="institution" REFTABLE="institution" REFFIELDS="name" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="artefact_media_quota_override">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" NOTNULL="true" />
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="quota" TYPE="int" LENGTH="10" NOTNULL="true" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="useridfk" TYPE="foreign" FIELDS="userid" REFTABLE="usr" REFFIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="artefact_media_student_quota">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" NOTNULL="true" />
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="mediaquota" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="useridfk" TYPE="foreign" FIELDS="userid" REFTABLE="usr" REFFIELDS="id" />
+               <KEY NAME="mediaquotafk" TYPE="foreign" FIELDS="mediaquota" REFTABLE="artefact_media_ldap_quota" REFFIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+    </TABLES>
+</XMLDB>
