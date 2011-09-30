@@ -243,10 +243,16 @@ class PluginArtefactMedia extends PluginArtefact {
         $studentdataobject->timemodified = $timemodified;
 
         // commit to the db
-        return insert_record('artefact_media_student_quota', $studentdataobject, false, true);
+	$existing = get_record('artefact_media_student_quota', 'userid', $userid, 'mediaquota', $mediaquota);
+        if ($existing) {
+            $studentdataobject->id = $existing->id;
+            return update_record('artefact_media_student_quota', $studentdataobject);
+        } else {
+            return insert_record('artefact_media_student_quota', $studentdataobject, false, true);
+        }
     }
 
-    private static function set_ldap_quota($institution, $mediaquota=null, $quota=null) {
+    private static function set_ldap_quota($institution, $mediaquota='', $quota='') {
 
         $data = new StdClass;
         $data->institution    = $institution;
