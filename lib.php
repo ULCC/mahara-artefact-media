@@ -5,9 +5,7 @@
  */
 
 // needed so that the ldap class below can use the auth interface for managing the
-/** @define $docroot '../../' */
-$docroot = get_config('docroot');
-require_once($docroot.'auth/lib.php');
+include_once(get_config('docroot').'auth/lib.php');
 
 /*
  * Main class definition for the media plugin
@@ -142,18 +140,26 @@ class PluginArtefactMedia extends PluginArtefact {
         $institution = array_shift(array_keys($institutions));
 
         if ($institution) {
+
+            // get the ldap user info
+            $authid = get_field('auth_instance', 'id', 'institution', $institution, 'authname', 'ldap');
+            $user = get_user($userid);
+            $ldapobject = new media_ldap_auth($authid);
+            $userou = $ldapobject->get_user_ou($user->username);
+
             $sql = "SELECT lq.quota, sq.timemodified, lq.ldapou
                       FROM {artefact_media_student_quota} sq
                 INNER JOIN {artefact_media_ldap_quota} lq
                      WHERE sq.mediaquota = lq.id
                        AND sq.userid = ?
-                       AND lq.institution = ?";
-            $studentldapquota = get_record_sql($sql, array($userid, $institution));
+                       AND lq.institution = ?
+                       AND lq.ldapou = ?";
+            $studentldapquota = get_record_sql($sql, array($userid, $institution, $userou));
 
             // not set yet, or out of date
             if (!$studentldapquota || ((time() - $studentldapquota->timemodified) > 86400)) {
                 // need to get the ldap group
-                $quota = self::set_student_ldap_quota($userid, $institution);
+                $quota = self::set_student_ldap_quota($userid, $institution, $userou);
 
             } else {
                 $quota->source = $studentldapquota->ldapou;
@@ -181,47 +187,30 @@ class PluginArtefactMedia extends PluginArtefact {
      * @param string $institution
      * @return stdClass quota object with value and source string
      */
-    public static function set_student_ldap_quota($userid, $institution) {
+    public static function set_student_ldap_quota($userid, $institution, $userou) {
 
         $ldapquotaid = '';
 
         // get user details
-        $user = get_user($userid);
+
         $defaultquota = get_config_plugin('artefact', 'media', 'defaultquota');
 
         $quota = new stdClass;
         $quota->value = $defaultquota;
         $quota->source = get_string('sitedefault', 'artefact.media');
 
-        $authid = get_field('auth_instance', 'id', 'institution', $institution, 'authname', 'ldap');
 
-        // possibly no ldap stuff set up yet
-        if (!$authid) {
-            return $quota;
-        }
-
-        // get the ldap user info
-        $ldapobject = new media_ldap_auth($authid);
-        $userou = $ldapobject->get_user_ou($user->username);
 
         // Any ldap connection problem will set the quota
         // back to site default for 24 hours
-        $ldapquota = false;
 
-        if ($userou) {
-            error_log('set_student_quota() user ou is: "'.$userou.'"');
-            // is there a mediaquota record for this ldap group at this institution in the config settings?
-            $ldapquota = get_record('artefact_media_ldap_quota', 'institution', $institution, 'ldapou', $userou);
-        } else {
-            error_log('set_student_quota() no user OU found');
-            // look for the empty one
-            $ldapquota = get_record('artefact_media_ldap_quota', 'institution', $institution, 'ldapou', '');
-        }
+        // Try to get the institution's default quota
+        // is there a mediaquota record for this ldap group at this institution in the config settings?
+        $ldapquota = get_record('artefact_media_ldap_quota', 'institution', $institution, 'ldapou', $userou);
 
         if (!$ldapquota) {
             // must make an empty record for the institution
-            $institution->ldapou = '';
-            $ldapquotaid = self::set_ldap_quota($institution);
+            $ldapquotaid = self::set_ldap_quota($institution, $userou, $defaultquota);
         } else {
             $ldapquotaid = $ldapquota->id;
             $quota->value = $ldapquota->quota;
@@ -253,12 +242,12 @@ class PluginArtefactMedia extends PluginArtefact {
         }
     }
 
-    private static function set_ldap_quota($institution, $mediaquota='', $quota='') {
+    private static function set_ldap_quota($institution, $ldapou='', $quota='') {
 
         $data = new StdClass;
         $data->institution    = $institution;
         // TODO - strip tags here?
-        $data->ldapou         = $mediaquota;
+        $data->ldapou         = $ldapou;
         $data->quota          = $quota;
 
         return insert_record('artefact_media_ldap_quota', $data, false, true);
@@ -948,7 +937,7 @@ class ArtefactTypeEpisode extends ArtefactType {
 
         if ($um->file['type'] == 'application/octet-stream') {
             // the browser wasn't sure, so use file_mime_type to guess
-            require_once('file.php');
+            require_once(get_config('docroot').'lib/file.php');
             $data->filetype = file_mime_type($um->file['tmp_name']);
         }
         else {
@@ -1034,6 +1023,7 @@ class ArtefactTypeEpisode extends ArtefactType {
 //        return 'http://w01.ulccfs.wf.ulcc.ac.uk/media/'.$account.'/'.$feed.'/'.$streamingfilename;
 //
 //    }
+
 
 
     /**
@@ -1339,16 +1329,22 @@ class media_ldap_auth extends Auth {
         $userinfo = $this->ldap_find_userdn($ldapconnection, $username);
 
         if (!$userinfo) {
-            return false;
+            return '';
         }
 
         // leaves us with 'OU=whatever'
         $userinfo = explode(',', $userinfo);
+        if (!isset($userinfo[1])) {
+            return ''; // weirdness
+        }
         $ou = $userinfo[1];
 
         // leaves us with the plain text name of the OU. Assumes that there is only 'CN=firstname lastname'
         // before the OU bit and that we want the first OU
         $ou = explode('=', $ou);
+        if (count($ou) != 2) {
+            return ''; // weirdness
+        }
         $ou = trim($ou[1]);
 
         return $ou;
