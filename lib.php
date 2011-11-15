@@ -207,9 +207,11 @@ class PluginArtefactMedia extends PluginArtefact {
         $ldapquota = false;
 
         if ($userou) {
+            error_log('set_student_quota() user ou is: "'.$userou.'"');
             // is there a mediaquota record for this ldap group at this institution in the config settings?
             $ldapquota = get_record('artefact_media_ldap_quota', 'institution', $institution, 'ldapou', $userou);
         } else {
+            error_log('set_student_quota() no user OU found');
             // look for the empty one
             $ldapquota = get_record('artefact_media_ldap_quota', 'institution', $institution, 'ldapou', '');
         }
