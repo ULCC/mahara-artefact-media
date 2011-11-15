@@ -5,7 +5,9 @@
  */
 
 // needed so that the ldap class below can use the auth interface for managing the
-include_once(get_config('docroot').'auth/lib.php');
+/** @define $docroot '../../' */
+$docroot = get_config('docroot');
+require_once($docroot.'auth/lib.php');
 
 /*
  * Main class definition for the media plugin
@@ -923,7 +925,7 @@ class ArtefactTypeEpisode extends ArtefactType {
 
         global $USER;
 
-        require_once('uploadmanager.php');
+        require_once(dirname(__FILE__).'/../../lib/uploadmanager.php');
         $um = new upload_manager($inputname);
         if ($error = $um->preprocess_file()) {
             throw new UploadException($error);
