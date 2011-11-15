@@ -7,7 +7,7 @@
 // needed so that the ldap class below can use the auth interface for managing the
 include_once(get_config('docroot').'auth/lib.php');
 
-/* 
+/*
  * Main class definition for the media plugin
  */
 class PluginArtefactMedia extends PluginArtefact {
@@ -75,7 +75,7 @@ class PluginArtefactMedia extends PluginArtefact {
 
     /**
      * Provides strings for javascript to use.
-     * 
+     *
      * @staticvar array $jsstrings
      * @param string $type
      * @return array
@@ -119,12 +119,9 @@ class PluginArtefactMedia extends PluginArtefact {
      */
     public static function get_quota($userid) {
 
-        global $USER;
-
         // we may get more than one quota from the LDAP groups
         $quota = new stdClass;
         $defaultquota = get_config_plugin('artefact', 'media', 'defaultquota');
-        //$source = '';
 
         // is there an override for a specific student?
         $override = get_field('artefact_media_quota_override', 'quota', 'userid', $userid);
@@ -138,7 +135,7 @@ class PluginArtefactMedia extends PluginArtefact {
         // if not, we look for a specific record for this LDAP OU at this institution
         $institutions = load_user_institutions($userid);
 
-        // Find the correct auth instance, i.e. the ldap one for the user's insttution
+        // Find the correct auth instance, i.e. the ldap one for the user's institution
         // Note this only uses the first institution available.
         $institution = array_shift(array_keys($institutions));
 
@@ -193,7 +190,7 @@ class PluginArtefactMedia extends PluginArtefact {
         $quota = new stdClass;
         $quota->value = $defaultquota;
         $quota->source = get_string('sitedefault', 'artefact.media');
-        
+
         $authid = get_field('auth_instance', 'id', 'institution', $institution, 'authname', 'ldap');
 
         // possibly no ldap stuff set up yet
@@ -259,9 +256,9 @@ class PluginArtefactMedia extends PluginArtefact {
         // TODO - strip tags here?
         $data->ldapou         = $mediaquota;
         $data->quota          = $quota;
-       
+
         return insert_record('artefact_media_ldap_quota', $data, false, true);
-        
+
     }
 
     /**
@@ -458,7 +455,7 @@ class ArtefactTypeEpisode extends ArtefactType {
                         'value' => $institution
                 );
 //            }
-        
+
             $ldapelements = array_merge($ldapelements, array(
                 'ldapquotadescription' => array(
                     'value' => '<tr><td colspan="2">' . get_string('ldapquotadescription', 'artefact.media') . '</td></tr>'
@@ -495,7 +492,7 @@ class ArtefactTypeEpisode extends ArtefactType {
                 )
             );
         }
-        
+
         // put it all into a fieldset
         $elements['ldapfieldset'] = array(
             'type' => 'fieldset',
@@ -615,7 +612,7 @@ class ArtefactTypeEpisode extends ArtefactType {
      * @return void
      */
     public function delete_local_file() {
-        
+
         unlink($this->localfilelocation);
 
         $directorybits = explode('/', $this->localfilelocation);
@@ -857,7 +854,7 @@ class ArtefactTypeEpisode extends ArtefactType {
 
     /**
      * Check if an episode exists in the db with a given title and owner.
-     * 
+     *
      * @param string $title
      * @param int $owner
      * @param string $institution
@@ -1274,7 +1271,7 @@ class ArtefactTypeEpisode extends ArtefactType {
         return get_records_sql_assoc($sql, array($id));
 
     }
-     
+
 
 }
 
