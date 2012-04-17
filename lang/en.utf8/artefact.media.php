@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -53,5 +53,5 @@ $string['uploadingfiletofolder'] =  'Uploading %s';
 $string['usecustomagreement'] = 'Use Custom Agreement';
 $string['noinstitution'] = 'You are not a member of any institution';
 $string['noinstitutionmessage'] = 'You will need to be a member of an institution on this site before you can upload any media. Contact your site administrator for assistance.';
-
+$string['studentoverride'] = 'Individual student override';
 ?>

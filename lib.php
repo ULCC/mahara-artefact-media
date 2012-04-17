@@ -127,7 +127,7 @@ class PluginArtefactMedia extends PluginArtefact {
         $override = get_field('artefact_media_quota_override', 'quota', 'userid', $userid);
 
         if ($override) {
-            $quota->value = $override->quota;
+            $quota->value = $override;
             $quota->source = get_string('studentoverride', 'artefact.media');
             return $quota;
         }
